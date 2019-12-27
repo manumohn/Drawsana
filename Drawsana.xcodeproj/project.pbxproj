@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2212294723B6216000799395 /* UIBezierPath+Superpowers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2212294623B6216000799395 /* UIBezierPath+Superpowers.swift */; };
 		3706B15A211B972A00D41622 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 3706B159211B972A00D41622 /* LICENSE */; };
 		3706B15C211BA07F00D41622 /* KeyedDecodingContainer+DrawsanaExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3706B15B211BA07F00D41622 /* KeyedDecodingContainer+DrawsanaExtensions.swift */; };
 		3706B15E211CF29500D41622 /* DrawingToolForShapeWithTwoPoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3706B15D211CF29500D41622 /* DrawingToolForShapeWithTwoPoints.swift */; };
@@ -90,6 +91,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2212294623B6216000799395 /* UIBezierPath+Superpowers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIBezierPath+Superpowers.swift"; sourceTree = "<group>"; };
 		3706B159211B972A00D41622 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		3706B15B211BA07F00D41622 /* KeyedDecodingContainer+DrawsanaExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyedDecodingContainer+DrawsanaExtensions.swift"; sourceTree = "<group>"; };
 		3706B15D211CF29500D41622 /* DrawingToolForShapeWithTwoPoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingToolForShapeWithTwoPoints.swift; sourceTree = "<group>"; };
@@ -186,6 +188,7 @@
 		37362D72211B853B003E5ACA /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				2212294623B6216000799395 /* UIBezierPath+Superpowers.swift */,
 				D0F3B43C21D34F4000701BB4 /* CGFloat+DrawsanaExtensions.swift */,
 				3762297C2113AC570034D0E3 /* CGPoint+DrawsanaExtensions.swift */,
 				37362D6B211B6930003E5ACA /* CGRect+DrawsanaExtensions.swift */,
@@ -498,6 +501,7 @@
 				D0F3B43D21D34F4000701BB4 /* CGFloat+DrawsanaExtensions.swift in Sources */,
 				376229742113AAF50034D0E3 /* ShapeTransform.swift in Sources */,
 				37885E2A210A9C69003A918F /* ArrowTool_EllipseTool_LineTool_RectTool.swift in Sources */,
+				2212294723B6216000799395 /* UIBezierPath+Superpowers.swift in Sources */,
 				3706B15C211BA07F00D41622 /* KeyedDecodingContainer+DrawsanaExtensions.swift in Sources */,
 				376229722113AAD30034D0E3 /* LineShape.swift in Sources */,
 				37885E2E210A9CDA003A918F /* SelectionTool.swift in Sources */,
