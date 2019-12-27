@@ -163,3 +163,40 @@ extension ShapeWithThreePoints {
     return rect.insetBy(dx: -strokeWidth/2, dy: -strokeWidth/2)
   }
 }
+
+/**
+Enhancement to `Shape` protocol that allows you to simply specify a
+`bezierPath` property.*/
+public protocol ShapeWithBezierPath {
+    var bezierPath: UIBezierPath { get }
+}
+
+extension ShapeWithBezierPath {
+    
+    public func getPoints() -> [CGPoint] {
+        let totalLength = bezierPath.mx_length
+        if let self = self as? EllipseShape {
+            let stridable = 1.0/36.0
+            return stride(from: 0.0, to: 1.0, by: stridable).map {self.bezierPath.mx_point(atFractionOfLength: CGFloat($0))}
+        } else if let self = self as? RectShape {
+            if self.rect.width == self.rect.height {
+                let stridable = Double(totalLength)/8.0/Double(totalLength)
+                return stride(from: 0.0, to: 1.0, by: stridable).map{self.bezierPath.mx_point(atFractionOfLength: CGFloat($0))}
+            } else {
+                let width = Double(self.rect.width)
+                let height = Double(self.rect.height)
+                var fractions: [Double] = [0]
+                fractions.append(width/2.0)
+                fractions.append(width)
+                fractions.append(width + height/2.0)
+                fractions.append(width + height)
+                fractions.append(width + height + width/2.0)
+                fractions.append(width + height + width)
+                fractions.append(width + height + width + height/2.0)
+                return fractions.map{ $0/(2*width + 2*height)}.map{self.bezierPath.mx_point(atFractionOfLength: CGFloat($0))}
+            }
+        }
+        return []
+    }
+    
+}
