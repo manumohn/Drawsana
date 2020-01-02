@@ -176,7 +176,15 @@ extension ShapeWithBezierPath {
     public func getPoints() -> [CGPoint] {
         let totalLength = bezierPath.mx_length
         if let self = self as? EllipseShape {
-            let stridable = 1.0/36.0
+            var divisor = 36.0
+            if self.squareRect.width < 100 {
+                divisor = 12.0
+            } else if self.squareRect.width < 150 {
+                divisor = 15.0
+            } else if self.squareRect.width < 250 {
+                divisor = 24.0
+            }
+            let stridable = 1.0/divisor
             return stride(from: 0.0, to: 1.0, by: stridable).map {self.bezierPath.mx_point(atFractionOfLength: CGFloat($0))}
         } else if let self = self as? RectShape {
             if self.rect.width == self.rect.height {
