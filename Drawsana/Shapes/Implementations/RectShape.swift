@@ -16,7 +16,10 @@ public class RectShape:
     ShapeWithBezierPath
 {
     public var bezierPath: UIBezierPath {
-        return UIBezierPath(rect: rect)
+        var transaltedRect = rect
+        transaltedRect.origin.x += transform.translation.x
+        transaltedRect.origin.y += transform.translation.y
+        return UIBezierPath(rect: transaltedRect)
     }
     
     private enum CodingKeys: String, CodingKey {
