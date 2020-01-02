@@ -8,13 +8,9 @@
 import Foundation
 
 public class BezierShape: Shape,
-                ShapeWithStandardState,
-                ShapeWithBezierPath,
-                ShapeSelectable {
-    
-    public var boundingRect: CGRect {
-        return bezierPath.bounds.insetBy(dx: -strokeWidth/2.0, dy: -strokeWidth/2.0)
-    }
+    ShapeWithStandardState,
+    ShapeWithBezierPath,
+ShapeSelectable {
     
     private enum CodingKeys: String, CodingKey {
         case id, strokeColor, fillColor, strokeWidth, type, transform
@@ -25,11 +21,22 @@ public class BezierShape: Shape,
     public var fillColor: UIColor? = .clear
     public var strokeWidth: CGFloat = 3
     public static var type: String = "BezierShape"
-    public var bezierPath: UIBezierPath = UIBezierPath()
     public var transform: ShapeTransform = .identity
+    private var _bezierPath: UIBezierPath
     
-    public init() {
-        
+    public var bezierPath: UIBezierPath    {
+        let bez = UIBezierPath(cgPath: _bezierPath.cgPath)
+        bez.apply(transform.affineTransform)
+        return bez
+    }
+    
+    public init(bezierPath: UIBezierPath) {
+        _bezierPath = bezierPath
+    }
+    
+    
+    public var boundingRect: CGRect {
+        return _bezierPath.bounds.insetBy(dx: -strokeWidth/2.0, dy: -strokeWidth/2.0)
     }
     
     public required init(from decoder: Decoder) throws {
@@ -47,6 +54,7 @@ public class BezierShape: Shape,
         fillColor = try values.decodeColorIfPresent(forKey: .fillColor)
         
         strokeWidth = try values.decode(CGFloat.self, forKey: .strokeWidth)
+        _bezierPath = UIBezierPath()
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -56,7 +64,7 @@ public class BezierShape: Shape,
         try container.encode(strokeColor?.hexString, forKey: .strokeColor)
         try container.encode(fillColor?.hexString, forKey: .fillColor)
         try container.encode(strokeWidth, forKey: .strokeWidth)
-
+        
         if !transform.isIdentity {
             try container.encode(transform, forKey: .transform)
         }
@@ -66,7 +74,7 @@ public class BezierShape: Shape,
         transform.begin(context: context)
         if let fillColor = fillColor {
             context.setFillColor(fillColor.cgColor)
-            context.addPath(bezierPath.cgPath)
+            context.addPath(_bezierPath.cgPath)
             context.fillPath()
         }
         
@@ -75,7 +83,7 @@ public class BezierShape: Shape,
         if let strokeColor = strokeColor {
             context.setStrokeColor(strokeColor.cgColor)
             context.setLineDash(phase: 0, lengths: [])
-            context.addPath(bezierPath.cgPath)
+            context.addPath(_bezierPath.cgPath)
             context.strokePath()
         }
         transform.end(context: context)
