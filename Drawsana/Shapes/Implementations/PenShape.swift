@@ -19,7 +19,19 @@ public struct PenLineSegment: Codable, Equatable {
   }
 }
 
-public class PenShape: Shape, ShapeWithStrokeState {
+public class PenShape: Shape, ShapeWithStrokeState, ShapeWithBezierPath {
+  public var bezierPath: UIBezierPath {
+    guard !segments.isEmpty else {return UIBezierPath()}
+    let path = UIBezierPath()
+    path.move(to: start)
+    segments.forEach{
+        path.move(to: $0.a)
+        path.addLine(to: $0.b)
+    }
+    path.addLine(to: start)
+    return path
+  }
+  
   private enum CodingKeys: String, CodingKey {
     case id, isFinished, strokeColor, start, strokeWidth, segments, isEraser, type
   }

@@ -203,6 +203,9 @@ extension ShapeWithBezierPath {
                 fractions.append(width + height + width + height/2.0)
                 return fractions.map{ $0/(2*width + 2*height)}.map{self.bezierPath.mx_point(atFractionOfLength: CGFloat($0))}
             }
+        } else if let self = self as? PenShape {
+            let stridable = 1.0/(Double(self.bezierPath.mx_length)/30.0)
+            return stride(from: 0.0, to: 1.0, by: stridable).map {self.bezierPath.mx_point(atFractionOfLength: CGFloat($0))}
         }
         return []
     }

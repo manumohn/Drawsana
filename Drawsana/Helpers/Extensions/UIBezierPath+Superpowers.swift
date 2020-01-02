@@ -212,14 +212,12 @@ extension UIBezierPath {
         let closestPathPoint = mx_perpendicularPoint(for: point)
         return closestPathPoint.linearLineLength(to: point)
     }
-    /// Convenience method to calculate the perpendicular distance from a
-    /// given `CGPoint` to the receiver. See `mx_perpendicularPoint(for:)`.
+    
+    /// Convenience method to calculate count of component in the receiver.
+    /// See `mx_pathElementsCount(:)`.
     ///
-    /// - Parameters:
-    ///   - point: The point for which to calculate the distance.
-    func mx_perpendicularDistance(from point: CGPoint) -> CGFloat {
-        let closestPathPoint = mx_perpendicularPoint(for: point)
-        return closestPathPoint.linearLineLength(to: point)
+    func mx_pathElementsCount() -> Int {
+        return extractPathElements().count
     }
 }
 //  -

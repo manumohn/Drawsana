@@ -188,7 +188,7 @@ public class DrawsanaView: UIView {
     selectionIndicatorView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
     let selectionLayer = CAShapeLayer()
-    selectionLayer.strokeColor = UIColor.black.cgColor
+    selectionLayer.strokeColor = UIColor.white.cgColor
     selectionLayer.lineWidth = 2
     selectionLayer.lineDashPattern = [4, 4]
     selectionLayer.fillColor = nil
@@ -367,7 +367,8 @@ public class DrawsanaView: UIView {
         // figure out where the shape is in space
         offset + shape.transform.translation +
         // Account for the coordinate system being anchored in the middle
-        CGPoint(x: -bounds.size.width / 2, y: -bounds.size.height / 2) +
+        // comment this since this was messing up on iPhone 11 Pro
+        // CGPoint(x: -bounds.size.width / 2, y: -bounds.size.height / 2) +
         // We've just moved the CENTER of the selection view to the UPPER LEFT
         // of the shape, so adjust by half the selection size:
         CGPoint(x: selectionBounds.size.width / 2, y: selectionBounds.size.height / 2)),
