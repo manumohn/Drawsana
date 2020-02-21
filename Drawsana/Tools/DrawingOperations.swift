@@ -9,16 +9,20 @@
 /**
  Add a shape to the drawing. Undoing removes the shape.
  */
-struct AddShapeOperation: DrawingOperation {
-  let shape: Shape
-
-  func apply(drawing: Drawing) {
-    drawing.add(shape: shape)
-  }
-
-  func revert(drawing: Drawing) {
-    drawing.remove(shape: shape)
-  }
+public struct AddShapeOperation: DrawingOperation {
+    let shape: Shape
+    
+    public init(shape: Shape) {
+        self.shape = shape
+    }
+    
+    public func apply(drawing: Drawing) {
+        drawing.add(shape: shape)
+    }
+    
+    public func revert(drawing: Drawing) {
+        drawing.remove(shape: shape)
+    }
 }
 
 /**

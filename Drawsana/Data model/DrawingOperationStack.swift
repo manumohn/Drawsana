@@ -81,5 +81,5 @@ public protocol DrawingOperation {
   func revert(drawing: Drawing)
 }
 extension DrawingOperation {
-  func shouldAdd(to operationStack: DrawingOperationStack) -> Bool { return true }
+    public func shouldAdd(to operationStack: DrawingOperationStack) -> Bool { return true }
 }
