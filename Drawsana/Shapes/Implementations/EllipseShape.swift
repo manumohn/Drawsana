@@ -13,22 +13,21 @@ public class EllipseShape:
     ShapeWithTwoPoints,
     ShapeWithStandardState,
     ShapeSelectable,
-    ShapeWithBezierPath
-{
+    ShapeWithBezierPath {
     public var bezierPath: UIBezierPath {
         var transaltedRect = rect
         transaltedRect.origin.x += transform.translation.x
         transaltedRect.origin.y += transform.translation.y
         return UIBezierPath(ovalIn: transaltedRect)
     }
-    
+
     private enum CodingKeys: String, CodingKey {
         case id, a, b, strokeColor, fillColor, strokeWidth, capStyle, joinStyle,
-        dashPhase, dashLengths, transform, type
+            dashPhase, dashLengths, transform, type
     }
-    
+
     public static let type: String = "Ellipse"
-    
+
     public var id: String = UUID().uuidString
     public var a: CGPoint = .zero
     public var b: CGPoint = .zero
@@ -40,35 +39,33 @@ public class EllipseShape:
     public var dashPhase: CGFloat?
     public var dashLengths: [CGFloat]?
     public var transform: ShapeTransform = .identity
-    
-    public init() {
-        
-    }
-    
+
+    public init() {}
+
     public required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        
+
         let type = try values.decode(String.self, forKey: .type)
         if type != EllipseShape.type {
             throw DrawsanaDecodingError.wrongShapeTypeError
         }
-        
+
         id = try values.decode(String.self, forKey: .id)
         a = try values.decode(CGPoint.self, forKey: .a)
         b = try values.decode(CGPoint.self, forKey: .b)
-        
+
         strokeColor = try values.decodeColorIfPresent(forKey: .strokeColor)
         fillColor = try values.decodeColorIfPresent(forKey: .fillColor)
-        
+
         strokeWidth = try values.decode(CGFloat.self, forKey: .strokeWidth)
         transform = try values.decodeIfPresent(ShapeTransform.self, forKey: .transform) ?? .identity
-        
+
         capStyle = CGLineCap(rawValue: try values.decodeIfPresent(Int32.self, forKey: .capStyle) ?? CGLineCap.round.rawValue)!
         joinStyle = CGLineJoin(rawValue: try values.decodeIfPresent(Int32.self, forKey: .joinStyle) ?? CGLineJoin.round.rawValue)!
         dashPhase = try values.decodeIfPresent(CGFloat.self, forKey: .dashPhase)
         dashLengths = try values.decodeIfPresent([CGFloat].self, forKey: .dashLengths)
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(EllipseShape.type, forKey: .type)
@@ -78,11 +75,11 @@ public class EllipseShape:
         try container.encode(strokeColor?.hexString, forKey: .strokeColor)
         try container.encode(fillColor?.hexString, forKey: .fillColor)
         try container.encode(strokeWidth, forKey: .strokeWidth)
-        
+
         if !transform.isIdentity {
             try container.encode(transform, forKey: .transform)
         }
-        
+
         if capStyle != .round {
             try container.encode(capStyle.rawValue, forKey: .capStyle)
         }
@@ -92,20 +89,20 @@ public class EllipseShape:
         try container.encodeIfPresent(dashPhase, forKey: .dashPhase)
         try container.encodeIfPresent(dashLengths, forKey: .dashLengths)
     }
-    
+
     public func render(in context: CGContext) {
         transform.begin(context: context)
-        
+
         if let fillColor = fillColor {
             context.setFillColor(fillColor.cgColor)
             context.addEllipse(in: rect)
             context.fillPath()
         }
-        
+
         context.setLineCap(capStyle)
         context.setLineJoin(joinStyle)
         context.setLineWidth(strokeWidth)
-        
+
         if let strokeColor = strokeColor {
             context.setStrokeColor(strokeColor.cgColor)
             if let dashPhase = dashPhase, let dashLengths = dashLengths {
@@ -113,11 +110,11 @@ public class EllipseShape:
             } else {
                 context.setLineDash(phase: 0, lengths: [])
             }
-            
+
             context.addEllipse(in: rect)
             context.strokePath()
         }
-        
+
         transform.end(context: context)
     }
 }

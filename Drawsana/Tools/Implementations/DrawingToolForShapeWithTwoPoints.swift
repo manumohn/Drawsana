@@ -13,54 +13,53 @@ import CoreGraphics
  one point to another
  */
 public class DrawingToolForShapeWithTwoPoints: DrawingTool {
-  public typealias ShapeType = Shape & ShapeWithTwoPoints
+    public typealias ShapeType = Shape & ShapeWithTwoPoints
 
-  public var name: String { fatalError("Override me") }
+    public var name: String { fatalError("Override me") }
 
-  public var shapeInProgress: ShapeType?
+    public var shapeInProgress: ShapeType?
 
-  public var isProgressive: Bool { return false }
+    public var isProgressive: Bool { return false }
 
-  public init() { }
+    public init() {}
 
-  /// Override this method to return a shape ready to be drawn to the screen.
-  public func makeShape() -> ShapeType {
-    fatalError("Override me")
-  }
+    /// Override this method to return a shape ready to be drawn to the screen.
+    public func makeShape() -> ShapeType {
+        fatalError("Override me")
+    }
 
-  public func handleTap(context: ToolOperationContext, point: CGPoint) {
-  }
+    public func handleTap(context _: ToolOperationContext, point _: CGPoint) {}
 
-  public func handleDragStart(context: ToolOperationContext, point: CGPoint) {
-    shapeInProgress = makeShape()
-    shapeInProgress?.a = point
-    shapeInProgress?.b = point
-    shapeInProgress?.apply(userSettings: context.userSettings)
-  }
+    public func handleDragStart(context: ToolOperationContext, point: CGPoint) {
+        shapeInProgress = makeShape()
+        shapeInProgress?.a = point
+        shapeInProgress?.b = point
+        shapeInProgress?.apply(userSettings: context.userSettings)
+    }
 
-  public func handleDragContinue(context: ToolOperationContext, point: CGPoint, velocity: CGPoint) {
-    shapeInProgress?.b = point
-  }
+    public func handleDragContinue(context _: ToolOperationContext, point: CGPoint, velocity _: CGPoint) {
+        shapeInProgress?.b = point
+    }
 
-  public func handleDragEnd(context: ToolOperationContext, point: CGPoint) {
-    guard var shape = shapeInProgress else { return }
-    shape.b = point
-    context.operationStack.apply(operation: AddShapeOperation(shape: shape))
-    shapeInProgress = nil
-  }
+    public func handleDragEnd(context: ToolOperationContext, point: CGPoint) {
+        guard var shape = shapeInProgress else { return }
+        shape.b = point
+        context.operationStack.apply(operation: AddShapeOperation(shape: shape))
+        shapeInProgress = nil
+    }
 
-  public func handleDragCancel(context: ToolOperationContext, point: CGPoint) {
-    // No such thing as a cancel for this tool. If this was recognized as a tap,
-    // just end the shape normally.
-    handleDragEnd(context: context, point: point)
-  }
+    public func handleDragCancel(context: ToolOperationContext, point: CGPoint) {
+        // No such thing as a cancel for this tool. If this was recognized as a tap,
+        // just end the shape normally.
+        handleDragEnd(context: context, point: point)
+    }
 
-  public func renderShapeInProgress(transientContext: CGContext) {
-    shapeInProgress?.render(in: transientContext)
-  }
+    public func renderShapeInProgress(transientContext: CGContext) {
+        shapeInProgress?.render(in: transientContext)
+    }
 
-  public func apply(context: ToolOperationContext, userSettings: UserSettings) {
-    shapeInProgress?.apply(userSettings: userSettings)
-    context.toolSettings.isPersistentBufferDirty = true
-  }
+    public func apply(context: ToolOperationContext, userSettings: UserSettings) {
+        shapeInProgress?.apply(userSettings: userSettings)
+        context.toolSettings.isPersistentBufferDirty = true
+    }
 }

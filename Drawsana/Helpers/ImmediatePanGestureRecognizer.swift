@@ -27,83 +27,81 @@ import UIKit.UIGestureRecognizerSubclass
  "really" want to pan. This is a drawing program, so that's not good.
  */
 class ImmediatePanGestureRecognizer: UIGestureRecognizer {
-  var tapThreshold: CGFloat = 10
-  // If gesture ends and this value is `true`, then the user's finger moved
-  // more than `tapThreshold` points during the gesture, i.e. it is not a tap.
-  private(set) var hasExceededTapThreshold = false
+    var tapThreshold: CGFloat = 10
+    // If gesture ends and this value is `true`, then the user's finger moved
+    // more than `tapThreshold` points during the gesture, i.e. it is not a tap.
+    private(set) var hasExceededTapThreshold = false
 
-  private var startPoint: CGPoint = .zero
-  private var lastLastPoint: CGPoint = .zero
-  private var lastLastTime: CFTimeInterval = 0
-  private var lastPoint: CGPoint = .zero
-  private var lastTime: CFTimeInterval = 0
-  private var trackedTouch: UITouch?
+    private var startPoint: CGPoint = .zero
+    private var lastLastPoint: CGPoint = .zero
+    private var lastLastTime: CFTimeInterval = 0
+    private var lastPoint: CGPoint = .zero
+    private var lastTime: CFTimeInterval = 0
+    private var trackedTouch: UITouch?
 
-  var velocity: CGPoint? {
-    guard let view = view, let trackedTouch = trackedTouch else { return nil }
-    let delta = trackedTouch.location(in: view) - lastLastPoint
-    let deltaT = CGFloat(lastTime - lastLastTime)
-    return CGPoint(x: delta.x / deltaT , y: delta.y - deltaT)
-  }
-
-  override func location(in view: UIView?) -> CGPoint {
-    guard let view = view else {
-      return lastPoint
-    }
-    return view.convert(lastPoint, to: view)
-  }
-
-  override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
-    guard trackedTouch == nil, let firstTouch = touches.first, let view = view else { return }
-    trackedTouch = firstTouch
-    startPoint = firstTouch.location(in: view)
-    lastPoint = startPoint
-    lastTime = CFAbsoluteTimeGetCurrent()
-    lastLastPoint = startPoint
-    lastLastTime = lastTime
-    state = .began
-  }
-
-  override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
-    guard
-      state == .began || state == .changed,
-      let view = view,
-      let trackedTouch = trackedTouch,
-      touches.contains(trackedTouch) else
-    {
-      return
+    var velocity: CGPoint? {
+        guard let view = view, let trackedTouch = trackedTouch else { return nil }
+        let delta = trackedTouch.location(in: view) - lastLastPoint
+        let deltaT = CGFloat(lastTime - lastLastTime)
+        return CGPoint(x: delta.x / deltaT, y: delta.y - deltaT)
     }
 
-    lastLastTime = lastTime
-    lastLastPoint = lastPoint
-    lastTime = CFAbsoluteTimeGetCurrent()
-    lastPoint = trackedTouch.location(in: view)
-    if (lastPoint - startPoint).length >= tapThreshold {
-      hasExceededTapThreshold = true
+    override func location(in view: UIView?) -> CGPoint {
+        guard let view = view else {
+            return lastPoint
+        }
+        return view.convert(lastPoint, to: view)
     }
 
-    state = .changed
-  }
-
-  override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
-    guard
-      state == .began || state == .changed,
-      let trackedTouch = trackedTouch,
-      touches.contains(trackedTouch) else
-    {
-      return
+    override func touchesBegan(_ touches: Set<UITouch>, with _: UIEvent) {
+        guard trackedTouch == nil, let firstTouch = touches.first, let view = view else { return }
+        trackedTouch = firstTouch
+        startPoint = firstTouch.location(in: view)
+        lastPoint = startPoint
+        lastTime = CFAbsoluteTimeGetCurrent()
+        lastLastPoint = startPoint
+        lastLastTime = lastTime
+        state = .began
     }
 
-    state = .ended
+    override func touchesMoved(_ touches: Set<UITouch>, with _: UIEvent) {
+        guard
+            state == .began || state == .changed,
+            let view = view,
+            let trackedTouch = trackedTouch,
+            touches.contains(trackedTouch) else {
+            return
+        }
 
-    DispatchQueue.main.async {
-      self.reset()
+        lastLastTime = lastTime
+        lastLastPoint = lastPoint
+        lastTime = CFAbsoluteTimeGetCurrent()
+        lastPoint = trackedTouch.location(in: view)
+        if (lastPoint - startPoint).length >= tapThreshold {
+            hasExceededTapThreshold = true
+        }
+
+        state = .changed
     }
-  }
 
-  override func reset() {
-    super.reset()
-    trackedTouch = nil
-    hasExceededTapThreshold = false
-  }
+    override func touchesEnded(_ touches: Set<UITouch>, with _: UIEvent) {
+        guard
+            state == .began || state == .changed,
+            let trackedTouch = trackedTouch,
+            touches.contains(trackedTouch) else {
+            return
+        }
+
+        state = .ended
+
+        DispatchQueue.main.async {
+            self.reset()
+        }
+    }
+
+    override func reset() {
+        super.reset()
+        trackedTouch = nil
+        hasExceededTapThreshold = false
+    }
 }

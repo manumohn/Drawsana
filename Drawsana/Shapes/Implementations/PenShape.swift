@@ -13,7 +13,7 @@ public struct PenLineSegment: Codable, Equatable {
     public var a: CGPoint
     public var b: CGPoint
     public var width: CGFloat
-    
+
     public var midPoint: CGPoint {
         return CGPoint(x: (a.x + b.x) / 2, y: (a.y + b.y) / 2)
     }
@@ -21,14 +21,14 @@ public struct PenLineSegment: Codable, Equatable {
 
 public class PenShape: Shape, ShapeWithStrokeState, ShapeWithBezierPath, ShapeSelectable {
     public var boundingRect: CGRect {
-        return bezierPath.bounds.insetBy(dx: -strokeWidth/2.0, dy: -strokeWidth/2.0)
+        return bezierPath.bounds.insetBy(dx: -strokeWidth / 2.0, dy: -strokeWidth / 2.0)
     }
-        
+
     public var bezierPath: UIBezierPath {
-        guard !segments.isEmpty else {return UIBezierPath()}
+        guard !segments.isEmpty else { return UIBezierPath() }
         let path = UIBezierPath()
         path.move(to: start)
-        segments.forEach{
+        segments.forEach {
             path.move(to: $0.a)
             path.addLine(to: $0.b)
         }
@@ -36,13 +36,13 @@ public class PenShape: Shape, ShapeWithStrokeState, ShapeWithBezierPath, ShapeSe
         path.close()
         return path
     }
-    
+
     private enum CodingKeys: String, CodingKey {
         case id, isFinished, strokeColor, start, strokeWidth, segments, isEraser, type, transform
     }
-    
+
     public static let type: String = "Pen"
-    
+
     public var id: String = UUID().uuidString
     public var isFinished = true
     public var start: CGPoint = .zero
@@ -52,18 +52,16 @@ public class PenShape: Shape, ShapeWithStrokeState, ShapeWithBezierPath, ShapeSe
     public var isEraser: Bool = false
     public var transform: ShapeTransform = .identity
 
-    public init() {
-        
-    }
-    
+    public init() {}
+
     public required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        
+
         let type = try values.decode(String.self, forKey: .type)
         if type != PenShape.type {
             throw DrawsanaDecodingError.wrongShapeTypeError
         }
-        
+
         id = try values.decode(String.self, forKey: .id)
         isFinished = try values.decode(Bool.self, forKey: .isFinished)
         start = try values.decode(CGPoint.self, forKey: .start)
@@ -73,7 +71,7 @@ public class PenShape: Shape, ShapeWithStrokeState, ShapeWithBezierPath, ShapeSe
         isEraser = try values.decode(Bool.self, forKey: .isEraser)
         transform = try values.decodeIfPresent(ShapeTransform.self, forKey: .transform) ?? .identity
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(PenShape.type, forKey: .type)
@@ -88,21 +86,21 @@ public class PenShape: Shape, ShapeWithStrokeState, ShapeWithBezierPath, ShapeSe
             try container.encode(transform, forKey: .transform)
         }
     }
-    
+
     public func hitTest(point: CGPoint) -> Bool {
-        return self.bezierPath.contains(point)
+        return bezierPath.contains(point)
     }
-    
+
     public func add(segment: PenLineSegment) {
         segments.append(segment)
     }
-    
+
     private func render(in context: CGContext, onlyLast: Bool = false) {
         transform.begin(context: context)
         if isEraser {
             context.setBlendMode(.clear)
         }
-        
+
         guard !segments.isEmpty else {
             if isFinished {
                 // Draw a dot
@@ -115,11 +113,11 @@ public class PenShape: Shape, ShapeWithStrokeState, ShapeWithBezierPath, ShapeSe
             context.restoreGState()
             return
         }
-        
+
         context.setLineCap(.round)
         context.setLineJoin(.round)
         context.setStrokeColor(strokeColor.cgColor)
-        
+
         var lastSegment: PenLineSegment?
         if onlyLast, segments.count > 1 {
             lastSegment = segments[segments.count - 2]
@@ -137,7 +135,7 @@ public class PenShape: Shape, ShapeWithStrokeState, ShapeWithBezierPath, ShapeSe
                 // Usually we only draw up to the mid point of the segment, but if the
                 // shape is done and this is the last segment, go ahead and draw a line
                 // to the end
-                if i == segments.count - 1 && isFinished {
+                if i == segments.count - 1, isFinished {
                     context.addLine(to: segment.b)
                 }
             } else if segments.count == 1 {
@@ -147,26 +145,26 @@ public class PenShape: Shape, ShapeWithStrokeState, ShapeWithBezierPath, ShapeSe
                 context.move(to: segment.a)
                 context.addLine(to: segment.midPoint)
             }
-            
+
             if needsStroke {
                 context.strokePath()
                 hasStroked = true
             }
-            
+
             lastWidth = segment.width
             lastSegment = segment
         }
-        
+
         if !hasStroked {
             context.strokePath()
         }
         transform.end(context: context)
     }
-    
+
     public func render(in context: CGContext) {
         render(in: context, onlyLast: false)
     }
-    
+
     public func renderLatestSegment(in context: CGContext) {
         render(in: context, onlyLast: true)
     }

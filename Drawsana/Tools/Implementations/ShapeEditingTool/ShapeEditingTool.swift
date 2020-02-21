@@ -7,6 +7,4 @@
 
 import Foundation
 
-public class ShapeEditingTool: DrawingTool {
-
-}
+public class ShapeEditingTool: DrawingTool {}

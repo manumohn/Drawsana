@@ -8,9 +8,7 @@
 
 extension CGFloat {
     var radians: CGFloat {
-        get {
-            let b = CGFloat(Double.pi) * self/180
-            return b
-        }
+        let b = CGFloat(Double.pi) * self / 180
+        return b
     }
 }
