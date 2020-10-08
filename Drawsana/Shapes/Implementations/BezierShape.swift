@@ -22,6 +22,7 @@ public class BezierShape: Shape,
     public static var type: String = "BezierShape"
     public var transform: ShapeTransform = .identity
     private var _bezierPath: UIBezierPath
+    public var explicitWidth: CGFloat?
 
     public var bezierPath: UIBezierPath {
         let bez = UIBezierPath(cgPath: _bezierPath.cgPath)

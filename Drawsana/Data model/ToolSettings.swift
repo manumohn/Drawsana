@@ -43,11 +43,14 @@ public class ToolSettings {
             delegate?.toolSettings(self, didSetIsPersistentBufferDirty: isPersistentBufferDirty)
         }
     }
+    
+    public var selectionView: UIView?
 
-    init(selectedShape: ShapeSelectable?, interactiveView: UIView?, isPersistentBufferDirty: Bool) {
+    init(selectedShape: ShapeSelectable?, interactiveView: UIView?, isPersistentBufferDirty: Bool, selectionView: UIView?) {
         self.selectedShape = selectedShape
         self.interactiveView = interactiveView
         self.isPersistentBufferDirty = isPersistentBufferDirty
+        self.selectionView = selectionView
     }
 }
 

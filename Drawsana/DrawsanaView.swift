@@ -45,10 +45,11 @@ public class DrawsanaView: UIView {
     )
 
     /// Values used by tools to manage state.
-    public let toolSettings = ToolSettings(
+    public lazy var toolSettings = ToolSettings(
         selectedShape: nil,
         interactiveView: nil,
-        isPersistentBufferDirty: false
+        isPersistentBufferDirty: false,
+        selectionView: selectionIndicatorView
     )
 
     public var drawing: Drawing = Drawing(size: CGSize(width: 320, height: 320)) {
